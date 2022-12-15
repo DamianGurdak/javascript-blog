@@ -43,29 +43,52 @@ const titleClickHandler = function (event) {
   targetArticle.classList.add('active');
 };
 
-const links = document.querySelectorAll('.titles a');
-
-for (let link of links) {
-  link.addEventListener('click', titleClickHandler);
-}
-
 //---------------------------------------------------------------------
 
 const optArticleSelector = '.post', // pojendynczy artykuł
   optTitleSelector = '.post-title', // tytuł pojeynczego artykułu
   optTitleListSelector = '.titles'; // lista ul linków lewa kolumna
 
+const articles = document.querySelectorAll(optArticleSelector);
+
 function generateTitleLinks() {
   /* remove contents of titleList */
-
   const titleList = document.querySelector(optTitleListSelector);
   titleList.innerHTML = ' ';
+
   /* for each article */
-  /* get the article id */
-  /* find the title element */
-  /* get the title from the title element */
-  /* create HTML of the link */
-  /* insert link into titleList */
+  let html = '';
+  for (let article of articles) {
+    /* get the article id */
+    const articleId = article.getAttribute('id');
+    console.log('article id: ', articleId);
+
+    /* find the title element */
+    const articleTitle = article.querySelector(optTitleSelector).innerHTML;
+    /* get the title from the title element */
+    /* create HTML of the link */
+    const linkHTML =
+      '<li><a href="#' +
+      articleId +
+      '"><span>' +
+      articleTitle +
+      '</span></a></li>';
+    console.log('generowany link: ', linkHTML);
+    /* insert link into titleList */
+    // titleList.innerHTML = titleList.innerHTML + linkHTML; // mnirj wydajne
+
+    // const linkList = document.querySelector(optTitleListSelector);
+    // linkList.insertAdjacentHTML('beforeend', linkHTML);
+    html = html + linkHTML;
+    console.log(html);
+  }
+  titleList.innerHTML = html;
 }
 
 generateTitleLinks();
+const links = document.querySelectorAll('.titles a');
+console.log('stała links: ', links);
+
+for (let link of links) {
+  link.addEventListener('click', titleClickHandler);
+}
