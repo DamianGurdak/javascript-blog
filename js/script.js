@@ -43,8 +43,8 @@ const optArticleSelector = '.post', // pojendynczy artykuł
   optTitleSelector = '.post-title', // tytuł pojeynczego artykułu
   optTitleListSelector = '.titles', // lista ul linków lewa kolumna
   optArticleTagsSelector = '.post-tags .list', // lista ul  tagów poszczególnych artykułów
-  optArticleAuthorSelector = '.post-author', // autot w artykule
-  optTagsListSelector = '.tags .list'; // lista tagów w prawej kolumnie
+  optArticleAuthorSelector = '.post-author'; // autot w artykule
+// optTagsListSelector = '.tags .list'; // lista tagów w prawej kolumnie
 
 function generateTitleLinks(customSelector = '') {
   /* [DONE] remove contents of titleList */
@@ -122,8 +122,8 @@ function generateTags() {
     for (let tag of articleTagsArray) {
       // console.log('pojedynczy tag:', tag);
       /* [DONE] generate HTML of the link */
-      const linkTag = '<li><a href="#' + tag + '">' + tag + '</a></li>';
-      /* add generated code to html variable */
+      const linkTag = `<li><a href="#tag-${tag}">${tag}</a></li>`;
+      /* add generated code to html variab le */
       html = html + linkTag;
 
       /* [DONE] END LOOP: for each tag */
@@ -193,27 +193,25 @@ addClickListenersToTags();
 //-------------------Dodajemy akcję po kliknięciu w tag a artykule-------------------
 
 function generateAuthors() {
-  /* [DONE] find all authors */
-  const authors = document.querySelectorAll(optArticleAuthorSelector);
-  // console.log('autorzy', authors);
+  /* [DONE] find all articles */
+  const articles = document.querySelectorAll(optArticleSelector);
+  // console.log('artykuły: ', articles);
 
   /* [DONE] START LOOP: for every author: */
-  for (let author of authors) {
+  for (let article of articles) {
     // console.log('author: ', author);
-    /* [DONE] make html variable with empty string */
-    let html = '';
+
+    const authorWrapper = article.querySelector(optArticleAuthorSelector);
 
     /* [DONE] get authors from data-tags attribute */
-    const authorWrapper = author.getAttribute('data-author');
+    const author = article.getAttribute('data-author');
     // console.log('autor: ', authorWrapper);
 
     /* [DONE] generate HTML of the link */
     const authorHTML = `<a href="#author-${author}"> ${author}</a>`;
-    /* add generated code to html variable */
-    html = html + authorHTML;
 
     /* [DONE] insert HTML of all the links into the tags wrapper */
-    authors.innerHTML = html;
+    authorWrapper.innerHTML = authorHTML;
     /* [DONE] END LOOP: for every article: */
   }
 }
@@ -260,8 +258,8 @@ function authorClickHandler(event) {
 
 function addClickListenersToAuthors() {
   /* [DONE] find all links to authors */ // tu szukam tego co stworzyłem w generate Authors??
-  const links = document.querySelector('.post-author a');
-  console.log('linki: ', links);
+  const links = document.querySelectorAll('.post-author a');
+  // console.log('linki: ', links);
 
   /* [] START LOOP: for each link */
   for (let link of links) {
