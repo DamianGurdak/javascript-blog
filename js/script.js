@@ -1,5 +1,14 @@
 'use strict';
 
+const optArticleSelector = '.post', // pojendynczy artykuł
+  optTitleSelector = '.post-title', // tytuł pojeynczego artykułu
+  optTitleListSelector = '.titles', // lista ul linków lewa kolumna
+  optArticleTagsSelector = '.post-tags .list', // lista ul  tagów poszczególnych artykułów
+  optArticleAuthorSelector = '.post-author', // autot w artykule
+  optTagsListSelector = '.tags .list'; // lista tagów w prawej kolumnie
+  // optCloudClassCount = '5',
+  // optCloudClassPrefix = 'tag-size-';
+
 const titleClickHandler = function (event) {
   event.preventDefault();
   const clickedElement = this;
@@ -39,12 +48,7 @@ const titleClickHandler = function (event) {
 
 //-------------------Generowanie listy tytułów-------------------
 
-const optArticleSelector = '.post', // pojendynczy artykuł
-  optTitleSelector = '.post-title', // tytuł pojeynczego artykułu
-  optTitleListSelector = '.titles', // lista ul linków lewa kolumna
-  optArticleTagsSelector = '.post-tags .list', // lista ul  tagów poszczególnych artykułów
-  optArticleAuthorSelector = '.post-author', // autot w artykule
-  optTagsListSelector = '.tags .list'; // lista tagów w prawej kolumnie
+
 
 function generateTitleLinks(customSelector = '') {
   /* [DONE] remove contents of titleList */
@@ -96,8 +100,33 @@ function generateTitleLinks(customSelector = '') {
 
 generateTitleLinks();
 
-//-------------------Przypisanie tagów do artykułów-------------------
+//-------------------Znalezienie skrajnych liczb wystąpień-------------------
 
+function calculateTagsParams(tags) {
+  const params = { max: 0, min: 999999 };
+
+  for (let tag in tags) {
+    // console.log(tag + ' is used ' + tags[tag] + ' times');
+
+    if (tags[tag] > params.max) {
+      params.max = tags[tag];
+    } else if (tags[tag] < params.min) {
+      params.min = tags[tag];
+    }
+  }
+  // console.log('tagsParams', params);
+  return params;
+}
+
+//-------------------Wybranie klasy dla tagu-------------------
+// function calculateTagClass(count, params) {
+//   const normalizedCount = count - params.min;
+//   const normalizedMax = params.max - params.min;
+//   const percentage = normalizedCount / normalizedMax;
+//   const classNumber = Math.floor( percentage * (optCloudClassCount - 1) + 1 );
+// }
+
+//-------------------Przypisanie tagów do artykułów i w parewj kolumnie-------------------
 function generateTags() {
   /* [NEW DONE] create a new variable allTags with an empty array */
   let allTags = [];
@@ -130,13 +159,16 @@ function generateTags() {
 
       /* [DONE] generate HTML of the link */
       const linkTag = `<li><a href="#tag-${tag}">${tag}</a></li>`;
+      // console.log("linkTag: ", linkTag);
       /* add generated code to html variable */
       html = html + linkTag;
 
       /* [NEW DONE] check if this link is NOT already in allTags */
-      if (allTags.indexOf(linkTag) == -1) {
-        /* [NEW] add generated code to allTags array */
-        allTags.push(linkTag);
+      if (!allTags[tag]) {
+        /* [NEW DONE] add tag to allTags object */
+        allTags[tag] = 1;
+      } else {
+        allTags[tag]++;
       }
 
       /* [DONE] END LOOP: for each tag */
@@ -147,10 +179,45 @@ function generateTags() {
   }
 
   /* [NEW DONE] find list of tags in right column */
-  const tagList = document.querySelector(optTagsListSelector);
+  const tagList = document.querySelectorAll(optTagsListSelector);
+  console.log('tagList: ', tagList);
 
-  /* [NEW] add html from allTags to tagList */
-  tagList.innerHTML = allTags.join(' ');
+  const tagsParams = calculateTagsParams(allTags);
+  console.log('tagsParams:', tagsParams);
+
+  /* [NEW] create variable for all links HTML code */
+  let allTagsHTML = '';
+
+  /* [NEW] START LOOP: for each tag in allTags: */
+  for (let tag in allTags) {
+    /* [NEW] generate code of a link and add it to allTagsHTML */
+    allTagsHTML += tag + ' (' + allTags[tag] + ') ';
+    
+
+    //////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
+
+    // const linkTag =  '<li><a href=' + tag + ' (' + allTags[tag] + ')' + '</a></li>';
+    // const linkTag =  `<li><a href=${tag} (${allTags[tag]})</a></li>`;
+
+    // allTagsHTML += linkTag;
+
+    //////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////
+    // dosanie clasy do linku
+    // const tagLinkHTML =  '<li>class="calculateTagClass(allTags[tag], tagsParams)"<a href=' + tag + ' (' + allTags[tag] + ')' + '</a></li>';
+    // console.log('tagLinkHTML:', tagLinkHTML);
+    
+  }
+  /* [NEW] END LOOP: for each tag in allTags: */
+
+  /*[NEW] add HTML from allTagsHTML to tagList */
+  tagList.innerHTML = allTagsHTML;
+  
+  
 }
 generateTags();
 
