@@ -5,9 +5,9 @@ const optArticleSelector = '.post', // pojendynczy artykuł
   optTitleListSelector = '.titles', // lista ul linków lewa kolumna
   optArticleTagsSelector = '.post-tags .list', // lista ul  tagów poszczególnych artykułów
   optArticleAuthorSelector = '.post-author', // autot w artykule
-  optTagsListSelector = '.tags .list'; // lista tagów w prawej kolumnie
-  // optCloudClassCount = '5',
-  // optCloudClassPrefix = 'tag-size-';
+  optTagsListSelector = '.tags.list', // lista tagów w prawej kolumnie
+  optCloudClassCount = '5',
+  optCloudClassPrefix = 'tag-size-';
 
 const titleClickHandler = function (event) {
   event.preventDefault();
@@ -47,8 +47,6 @@ const titleClickHandler = function (event) {
 };
 
 //-------------------Generowanie listy tytułów-------------------
-
-
 
 function generateTitleLinks(customSelector = '') {
   /* [DONE] remove contents of titleList */
@@ -119,12 +117,14 @@ function calculateTagsParams(tags) {
 }
 
 //-------------------Wybranie klasy dla tagu-------------------
-// function calculateTagClass(count, params) {
-//   const normalizedCount = count - params.min;
-//   const normalizedMax = params.max - params.min;
-//   const percentage = normalizedCount / normalizedMax;
-//   const classNumber = Math.floor( percentage * (optCloudClassCount - 1) + 1 );
-// }
+function calculateTagClass(count, params) {
+  const normalizedCount = count - params.min;
+  const normalizedMax = params.max - params.min;
+  const percentage = normalizedCount / normalizedMax;
+  const classNumber = Math.floor(percentage * (optCloudClassCount - 1) + 1);
+
+  return optCloudClassPrefix + classNumber;
+}
 
 //-------------------Przypisanie tagów do artykułów i w parewj kolumnie-------------------
 function generateTags() {
@@ -179,7 +179,7 @@ function generateTags() {
   }
 
   /* [NEW DONE] find list of tags in right column */
-  const tagList = document.querySelectorAll(optTagsListSelector);
+  const tagList = document.querySelector(optTagsListSelector);
   console.log('tagList: ', tagList);
 
   const tagsParams = calculateTagsParams(allTags);
@@ -191,33 +191,34 @@ function generateTags() {
   /* [NEW] START LOOP: for each tag in allTags: */
   for (let tag in allTags) {
     /* [NEW] generate code of a link and add it to allTagsHTML */
-    allTagsHTML += tag + ' (' + allTags[tag] + ') ';
-    
+    // allTagsHTML += tag + ' (' + allTags[tag] + ') ';
 
     //////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////
 
-    // const linkTag =  '<li><a href=' + tag + ' (' + allTags[tag] + ')' + '</a></li>';
-    // const linkTag =  `<li><a href=${tag} (${allTags[tag]})</a></li>`;
+    // const linkTag =
+    //   '<li><a href="#tag-' +
+    //   tag +
+    //   '">' +
+    //   tag +
+    //   ' (' +
+    //   allTags[tag] +
+    //   ')' +
+    //   '</a></li>';
 
-    // allTagsHTML += linkTag;
+    const linkTag = `<li><a class="${calculateTagClass(
+      allTags[tag],
+      tagsParams
+    )}" href="#tag-${tag}"> ${tag} (${allTags[tag]})</a></li>`;
 
-    //////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////
+    allTagsHTML += linkTag;
 
-    //////////////////////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////////////////////
-    // dosanie clasy do linku
-    // const tagLinkHTML =  '<li>class="calculateTagClass(allTags[tag], tagsParams)"<a href=' + tag + ' (' + allTags[tag] + ')' + '</a></li>';
     // console.log('tagLinkHTML:', tagLinkHTML);
-    
   }
   /* [NEW] END LOOP: for each tag in allTags: */
 
   /*[NEW] add HTML from allTagsHTML to tagList */
   tagList.innerHTML = allTagsHTML;
-  
-  
 }
 generateTags();
 
