@@ -7,7 +7,8 @@ const optArticleSelector = '.post', // pojendynczy artykuł
   optArticleAuthorSelector = '.post-author', // autot w artykule
   optTagsListSelector = '.tags.list', // lista tagów w prawej kolumnie
   optCloudClassCount = '5',
-  optCloudClassPrefix = 'tag-size-';
+  optCloudClassPrefix = 'tag-size-',
+  optAuthorsListSelector = '.list.authors'; // lista tagów w prawej kolumnie
 
 const titleClickHandler = function (event) {
   event.preventDefault();
@@ -180,10 +181,10 @@ function generateTags() {
 
   /* [NEW DONE] find list of tags in right column */
   const tagList = document.querySelector(optTagsListSelector);
-  console.log('tagList: ', tagList);
+  // console.log('tagList: ', tagList);
 
   const tagsParams = calculateTagsParams(allTags);
-  console.log('tagsParams:', tagsParams);
+  // console.log('tagsParams:', tagsParams);
 
   /* [NEW] create variable for all links HTML code */
   let allTagsHTML = '';
@@ -280,6 +281,10 @@ addClickListenersToTags();
 //-------------------Dodajemy akcję po kliknięciu w tag a artykule-------------------
 
 function generateAuthors() {
+  /* [NEW DONE] create a new variable allAuthors with an empty object */
+  let allAuthors = {};
+  // console.log('tablica linków autorów', allAuthors);
+
   /* [DONE] find all articles */
   const articles = document.querySelectorAll(optArticleSelector);
   // console.log('artykuły: ', articles);
@@ -297,10 +302,42 @@ function generateAuthors() {
     /* [DONE] generate HTML of the link */
     const authorHTML = `<a href="#author-${author}"> ${author}</a>`;
 
+    /* [NEW DONE] check if this link is NOT already in allTags */
+    if (!allAuthors[author]) {
+      /* [NEW DONE] add tag to allTags object */
+      allAuthors[author] = 1;
+    } else {
+      allAuthors[author]++;
+    }
+
     /* [DONE] insert HTML of all the links into the tags wrapper */
     authorWrapper.innerHTML = authorHTML;
+
     /* [DONE] END LOOP: for every article: */
   }
+
+  /* [NEW ] find list of authors in right column */
+  const authorListWrapper = document.querySelector(optAuthorsListSelector);
+
+  const authorsParams = calculateTagsParams(allAuthors);
+  // console.log('tagsParams:', tagsParams);
+
+  /* [NEW] create variable for all links HTML code */
+  let allAuthorsHTML = '';
+
+  /* [NEW] START LOOP: for each tag in allAuthors: */
+  for (let author in allAuthors) {
+    /* [NEW] generate code of a link and add it to allAuthorsHTML */
+    const authorLinkHTML = `<li><a class="${calculateTagClass(
+      allAuthors[author],
+      authorsParams
+    )}" href="#tag-${author}"> ${author} (${allAuthors[author]})</a></li>`;
+
+    allAuthorsHTML += authorLinkHTML;
+  }
+
+  /*[NEW] add HTML from allTagsHTML to tagList */
+  authorListWrapper.innerHTML = allAuthorsHTML;
 }
 generateAuthors();
 
