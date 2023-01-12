@@ -303,7 +303,7 @@ function tagClickHandler(event) {
 
 function addClickListenersToTags() {
   /* [DONE] find all links to tags */
-  const links = document.querySelectorAll('.post-tags a');
+  const links = document.querySelectorAll('.post-tags a, .list.tags a');
   // console.log('linki: ', links);
 
   /* [] START LOOP: for each link */
@@ -441,7 +441,7 @@ function authorClickHandler(event) {
 
 function addClickListenersToAuthors() {
   /* [DONE] find all links to authors */ // tu szukam tego co stworzyłem w generate Authors??
-  const links = document.querySelectorAll('.post-author a');
+  const links = document.querySelectorAll('.post-author a, .list.authors a');
   // console.log('linki: ', links);
 
   /* [] START LOOP: for each link */
